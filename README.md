@@ -21,7 +21,7 @@ $ curl -s --location http://raw.github.com/hyperoslo/mysql-s3/master/install.sh 
 
 ## Configuration
 
-You'll need to set the following environment variables to use these scripts:
+You'll need to set the following environment variables to use the script:
 
 * `MYSQL_S3_BUCKET`: The name of the bucket you want to archive to.
 * `MYSQL_S3_DATABASE_NAME`: The name of the database you want to archive.
