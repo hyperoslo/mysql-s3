@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -e
+
+if [ -z $MYSQL_S3_BUCKET ]; then
+  echo 'Error: $MYSQL_S3_BUCKET must be set to the bucket you wish to archive the database to'
+  return
+fi
+
+if [ -z $MYSQL_S3_DATABASE_NAME ]; then
+  echo 'Error: $MYSQL_S3_DATABASE_NAME must be set to the name of the database you wish to archive'
+  return
+fi
+
+if [ -z $MYSQL_S3_DATABASE_USER ]; then
+  echo 'Error: $MYSQL_S3_DATABASE_USER must be set'
+  return
+fi
+
+if [ -z $MYSQL_S3_DATABASE_PASSWORD ]; then
+  echo 'Error: $MYSQL_S3_DATABASE_PASSWORD must be set'
+  return
+fi
+
+ARCHIVE_FILE=${MYSQL_S3_DATABASE_NAME}-`date '+%Y-%m-%d'`.tar.gz
+ARCHIVE_PATH=/tmp/$ARCHIVE_FILE
+BACKUP_FILE=${MYSQL_S3_DATABASE_NAME}-`date '+%Y-%m-%d'`.sql
+BACKUP_PATH=/tmp/$BACKUP_FILE
+
+rm -rf $BACKUP_PATH
+mysqldump -u $MYSQL_S3_DATABASE_USER -p$MYSQL_S3_DATABASE_PASSWORD $MYSQL_S3_DATABASE_NAME > $BACKUP_PATH
+
+rm -rf $ARCHIVE_PATH
+tar -C /tmp -zcf $ARCHIVE_PATH $BACKUP_FILE
+
+aws s3 mv $ARCHIVE_PATH s3://$MYSQL_S3_BUCKET/$ARCHIVE_FILE
+
