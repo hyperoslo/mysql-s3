@@ -3,7 +3,7 @@
 At Hyper, we make lots of things. Many of those things generate data, and we
 don't want to lose that data.
 
-This is a shell script that archives a MySQL database to AWS s3.
+This is a shell script that archives a MySQL database to AWS S3.
 
 ## Usage
 
